@@ -20,8 +20,10 @@ y = dataset.target  # Labels
 dataframe = pd.DataFrame(X, columns=dataset.feature_names)
 dataframe['target'] = y
 
-# print the first five rows of the dataframe
+# print dataframe information
 dataframe.head()
+dataframe.describe()
+dataframe.info()
 
 # Split data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
