@@ -9,8 +9,9 @@ This project trains a feedforward neural network model to identify breast cancer
 - **Results:** The project uses matplotlib to display training/validation accuracy and loss over 50 epochs.
 
 ## Installation
-1. Clone the repository: git clone
-2. 
+1. Clone the repository: ```git clone https://github.com/hyao03/Breast_Cancer_NN_Project```
+2. Install dependencies: ```pip install -r requirements.txt```
+3. Train the model: ```python NNproject.py```
 
 ## License
 MIT
