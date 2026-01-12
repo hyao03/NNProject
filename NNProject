@@ -1,51 +1,61 @@
-from sklearn.datasets import load_breast_cancer
+# Imports
 import pandas as pd
 import numpy as np
+import sklearn
+from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
+from tensorflow.keras.callbacks import EarlyStopping
+import matplotlib.pyplot as plt
 
 # Load dataset
 data = load_breast_cancer()
-X = data.data  # Features
-y = data.target  # Labels
+X = dataset.data  # Features
+y = dataset.target  # Labels
 
-# Convert to DataFrame
-df = pd.DataFrame(X, columns=data.feature_names)
-df['target'] = y
+# Convert dataset to DataFrame for easier handling
+dataframe = pd.DataFrame(X, columns=dataset.feature_names)
+dataframe['target'] = y
 
 # print the first five rows of the dataframe
-data_frame.head()
+dataframe.head()
 
-# Split data
+# Split data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Normalize features
+# Standardize features for training and testing sets
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
-# Defining the model
+# Build neural network model
 model = Sequential([
     Dense(30, input_dim=X_train.shape[1], activation='relu'),  # Hidden layer with 30 neurons
     Dense(15, activation='relu'),  # Hidden layer with 15 neurons
     Dense(1, activation='sigmoid')  # Output layer for binary classification
 ])
 
-# Compiling the model
+# Compile model
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-# Train the model
-history = model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=10, batch_size=16, verbose=1)
+# Early stopping to prevent overfitting
+early_stop = EarlyStopping(
+    monitor='val_loss',
+    patience=5,
+    restore_best_weights=True
+)
+
+# Train model
+history = model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=10, batch_size=16, callbacks=[early_stop], verbose=1)
 
 # Evaluate model
-loss, accuracy = model.evaluate(X_test, y_test)
-print(f"Test Loss: {loss:.4f}, Test Accuracy: {accuracy:.4f}")
+test_loss, test_accuracy = model.evaluate(X_test, y_test, verbose=0)
+print(f"Test Loss: {test_loss:.4f}, Test Accuracy: {test_accuracy:.4f}")
 
-import matplotlib.pyplot as plt
-
+# Plot training & validation accuracy values
 plt.plot(history.history['accuracy'], label='Training Accuracy')
 plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
 plt.title('Model Accuracy')
@@ -54,6 +64,7 @@ plt.ylabel('Accuracy')
 plt.legend()
 plt.show()
 
+# Plot training & validation loss values
 plt.plot(history.history['loss'], label='Training Loss')
 plt.plot(history.history['val_loss'], label='Validation Loss')
 plt.title('Model Loss')
